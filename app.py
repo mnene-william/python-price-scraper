@@ -58,6 +58,7 @@ def scrape_products(num_products):
             
             response = requests.get(url, timeout=10) 
             response.raise_for_status()
+            response.encoding = 'utf-8'
  
             soup = BeautifulSoup(response.text, 'html.parser') 
 
