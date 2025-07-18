@@ -31,15 +31,10 @@ def get_exchange_rate(api_key, from_currency, to_currency):
         else:
             print(f"Error from currency API: {data.get('error-type', 'Unknown error')}")
             return None
-    except requests.exceptions.ConnectionError:
+    except:
         print("Connection error occurred while fetching exchange rate.Check your internet connection.")
         return None
-    except requests.exceptions.Timeout:
-        print("Timeout occurred while fetching exchange rate.")
-        return None
-    except requests.exceptions.RequestException as e:
-        print(f"An error occurred while fetching exchange rate: {e}")
-        return None
+
 
 def scrape_products(num_products):
 
@@ -75,18 +70,18 @@ def scrape_products(num_products):
 
                
                 title_tag = book.find('h3').find('a')
-                title = title_tag['title'].strip() if title_tag else "N/A" 
+                title = title_tag['title'].strip()  
 
                 
                 price_tag = book.find('p', class_='price_color')
-                price_str = price_tag.get_text().strip() if price_tag else "£0.00"
+                price_str = price_tag.get_text().strip() 
 
 
                 try:
                     original_price = float(price_str.replace('£', '')) 
-                except ValueError:
+                except:
                     original_price = 0.0 
-                    print(f"Warning: Could not parse price for '{title}'. Original string: '{price_str}'")
+                    print(f"Could not parse price for '{title}'. Original string: '{price_str}'")
 
                 
                 products.append({
@@ -96,15 +91,9 @@ def scrape_products(num_products):
                 })
             page_num += 1 
 
-        except requests.exceptions.ConnectionError:
+        except:
             print(f"Connection error occurred while accessing {url}. Please check your internet connection.")
-            break
-        except requests.exceptions.Timeout:
-            print(f"Request timed out while accessing {url}.")
-            break
-        except requests.exceptions.RequestException as e:
-            print(f"An unexpected request error occurred while accessing {url}: {e}")
-            break
+            
 
     return products
 
