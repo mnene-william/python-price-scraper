@@ -32,20 +32,17 @@ def get_exchange_rate(api_key, from_currency, to_currency):
             print(f"Error from currency API: {data.get('error-type', 'Unknown error')}")
             return None
     except requests.exceptions.ConnectionError:
-        print("Connection error occurred while fetching exchange rate. Please check your internet connection.")
+        print("Connection error occurred while fetching exchange rate.Check your internet connection.")
         return None
     except requests.exceptions.Timeout:
-        print("Timeout occurred while fetching exchange rate. The request to currency API took too long.")
+        print("Timeout occurred while fetching exchange rate.")
         return None
     except requests.exceptions.RequestException as e:
         print(f"An error occurred while fetching exchange rate: {e}")
         return None
-    except json.JSONDecodeError:
-        print("Error decoding JSON response from currency API. API response might be malformed.")
-        return None
 
 def scrape_products(num_products):
-    """Scrapes product names and prices from books.toscrape.com."""
+
     products = [] 
     page_num = 1 
 
@@ -107,7 +104,7 @@ def scrape_products(num_products):
             print(f"Connection error occurred while accessing {url}. Please check your internet connection.")
             break
         except requests.exceptions.Timeout:
-            print(f"Request timed out while accessing {url}. The server took too long to respond.")
+            print(f"Request timed out while accessing {url}.")
             break
         except requests.exceptions.RequestException as e:
             print(f"An unexpected request error occurred while accessing {url}: {e}")
@@ -143,27 +140,24 @@ if __name__ == "__main__":
         converted_price = round(product["original_price"] * exchange_rate, 2)
         converted_products.append({
             "name": product["name"],
-            # Format original price nicely for display
+
             "original_price": f"{product['original_price']:.2f} {product['original_currency']}",
-            # Format converted price nicely for display
             "converted_price": f"{converted_price:.2f} {TARGET_CURRENCY}",
-            "conversion_timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S") # Add timestamp
+            "conversion_timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         })
 
-    # Display in a readable table format using pandas and tabulate
     df = pd.DataFrame(converted_products)
     print("\n--- Product Prices (Original and Converted) ---")
     print(tabulate(df[['name', 'original_price', 'converted_price', 'conversion_timestamp']],
                    headers='keys',
-                   tablefmt='pipe')) # 'pipe' format is good for Markdown tables
+                   tablefmt='pipe')) 
 
-    # Save data to a JSON file
-    # Create a unique filename with timestamp
-    file_name = f"product_prices_converted_to_{TARGET_CURRENCY.lower()}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+
+    file_name = f"prices.json"
     try:
         with open(file_name, 'w', encoding='utf-8') as f:
-            json.dump(converted_products, f, ensure_ascii=False, indent=4)
-        print(f"\nData successfully saved to {file_name}")
+            json.dump(converted_products, f, indent=4)
+        print(f"Data successfully saved to {file_name}")
     except IOError as e:
         print(f"Error saving data to file {file_name}: {e}")
             
