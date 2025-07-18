@@ -105,9 +105,6 @@ def scrape_products(num_products):
         except requests.exceptions.RequestException as e:
             print(f"An unexpected request error occurred while accessing {url}: {e}")
             break
-        except Exception as e:
-            print(f"An unexpected error occurred during HTML parsing or data extraction: {e}")
-            break 
 
     return products
 
@@ -154,8 +151,9 @@ if __name__ == "__main__":
         with open(file_name, 'w') as f:
             json.dump(converted_products, f, indent=4)
         print(f"Data successfully saved to {file_name}")
-    except IOError as e:
-        print(f"Error saving data to file {file_name}: {e}")
+    except:
+        print(f"An error occured while saving data to {file_name}")
+
             
 
     
