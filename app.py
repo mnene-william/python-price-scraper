@@ -132,7 +132,7 @@ if __name__ == "__main__":
 
     
 
-        print(f"Current Exchange Rate: 1 {ORIGINAL_CURRENCY} = {exchange_rate:.4f}{TARGET_CURRENCY}")
+        print(f"Current Exchange Rate is {ORIGINAL_CURRENCY} = {exchange_rate}{TARGET_CURRENCY}")
 
 
     converted_products = []
@@ -141,13 +141,13 @@ if __name__ == "__main__":
         converted_products.append({
             "name": product["name"],
 
-            "original_price": f"{product['original_price']:.2f} {product['original_currency']}",
-            "converted_price": f"{converted_price:.2f} {TARGET_CURRENCY}",
+            "original_price": f"{product['original_price']} {product['original_currency']}",
+            "converted_price": f"{converted_price} {TARGET_CURRENCY}",
             "conversion_timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         })
 
     df = pd.DataFrame(converted_products)
-    print("\n--- Product Prices (Original and Converted) ---")
+    print("\n Book articles Prices")
     print(tabulate(df[['name', 'original_price', 'converted_price', 'conversion_timestamp']],
                    headers='keys',
                    tablefmt='pipe')) 
@@ -155,7 +155,7 @@ if __name__ == "__main__":
 
     file_name = f"prices.json"
     try:
-        with open(file_name, 'w', encoding='utf-8') as f:
+        with open(file_name, 'w') as f:
             json.dump(converted_products, f, indent=4)
         print(f"Data successfully saved to {file_name}")
     except IOError as e:
